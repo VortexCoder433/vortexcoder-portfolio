@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 # Import bottle
 try:
-    from bottle import route, run, request, response, post
+    from bottle import route, run, request, response, post, hook, HTTPResponse
 except ImportError as e:
     import traceback
     traceback.print_exc()
@@ -25,16 +25,22 @@ DB_FILE = 'users.json'
 # Format: { email: { 'username': u, 'password': p, 'code': c, 'expires': t } }
 pending_verifications = {}
 
-# CORS Helper
-def enable_cors(fn):
-    def wrapper(*args, **kwargs):
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-        if request.method == 'OPTIONS':
-            return
-        return fn(*args, **kwargs)
-    return wrapper
+# CORS Headers Configuration
+cors_headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token',
+}
+
+@hook('before_request')
+def handle_options():
+    if request.method == 'OPTIONS':
+        raise HTTPResponse(headers=cors_headers)
+
+@hook('after_request')
+def enable_cors():
+    for key, value in cors_headers.items():
+        response.set_header(key, value)
 
 def send_verification_email(to_email, code, username):
     """Sends a verification email with the 6-digit OTP code using Gmail SMTP"""
@@ -87,15 +93,7 @@ def save_user(username, email, password):
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump(users, f, indent=4)
 
-@route('/api/register', method='OPTIONS')
-@route('/api/verify', method='OPTIONS')
-@route('/api/login', method='OPTIONS')
-@enable_cors
-def setup_options():
-    return {}
-
 @post('/api/register')
-@enable_cors
 def register():
     try:
         data = request.json
@@ -137,7 +135,6 @@ def register():
         return {'success': False, 'message': f'Server error: {e}'}
 
 @post('/api/verify')
-@enable_cors
 def verify():
     try:
         data = request.json
@@ -175,7 +172,6 @@ def verify():
         return {'success': False, 'message': f'Server error: {e}'}
 
 @post('/api/login')
-@enable_cors
 def login():
     try:
         data = request.json
