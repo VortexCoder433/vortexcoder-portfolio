@@ -696,7 +696,7 @@ function initAuthModal() {
     const verifyForm = document.getElementById('verify-form');
     const log = document.getElementById('auth-terminal-log');
 
-    const API_URL = 'http://localhost:5000/api';
+    const API_URL = 'https://vortexcoder-portfolio-backend.onrender.com/api';
     let verifyEmail = ''; // Temporarily hold email for verification step
 
     function printAuthLog(text, styleClass = '') {
