@@ -695,6 +695,13 @@ function initAuthModal() {
     const signupForm = document.getElementById('signup-form');
     const log = document.getElementById('auth-terminal-log');
 
+    // Profile elements
+    const profileModal = document.getElementById('profile-modal');
+    const profileCloseBtn = document.getElementById('profile-modal-close');
+    const profileTrigger = document.getElementById('profile-trigger');
+    const mobileProfileTrigger = document.getElementById('mobile-profile-trigger');
+    const logoutBtn = document.getElementById('btn-logout');
+
     function printAuthLog(text, styleClass = '') {
         const p = document.createElement('p');
         p.className = `auth-log-line ${styleClass}`;
@@ -750,6 +757,97 @@ function initAuthModal() {
     tabSignin.addEventListener('click', () => switchTab('signin'));
     tabSignup.addEventListener('click', () => switchTab('signup'));
 
+    // Update Header UI based on login state
+    function updateAuthUI() {
+        const activeUser = sessionStorage.getItem('vortexcoder_active_user');
+        const signinBtn = document.getElementById('signin-trigger');
+        const signupBtn = document.getElementById('signup-trigger');
+        const profileBtn = document.getElementById('profile-trigger');
+
+        const mobileSigninBtn = document.getElementById('mobile-signin-trigger');
+        const mobileSignupBtn = document.getElementById('mobile-signup-trigger');
+        const mobileProfileBtn = document.getElementById('mobile-profile-trigger');
+
+        if (activeUser) {
+            if (signinBtn) signinBtn.classList.add('hidden');
+            if (signupBtn) signupBtn.classList.add('hidden');
+            if (mobileSigninBtn) mobileSigninBtn.classList.add('hidden');
+            if (mobileSignupBtn) mobileSignupBtn.classList.add('hidden');
+
+            if (profileBtn) {
+                profileBtn.classList.remove('hidden');
+                document.getElementById('profile-btn-text').textContent = activeUser;
+            }
+            if (mobileProfileBtn) {
+                mobileProfileBtn.classList.remove('hidden');
+                document.getElementById('mobile-profile-btn-text').textContent = activeUser;
+            }
+        } else {
+            if (signinBtn) signinBtn.classList.remove('hidden');
+            if (signupBtn) signupBtn.classList.remove('hidden');
+            if (mobileSigninBtn) mobileSigninBtn.classList.remove('hidden');
+            if (mobileSignupBtn) mobileSignupBtn.classList.remove('hidden');
+
+            if (profileBtn) profileBtn.classList.add('hidden');
+            if (mobileProfileBtn) mobileProfileBtn.classList.add('hidden');
+        }
+    }
+
+    // Profile Modal Actions
+    function openProfileModal() {
+        const activeUser = sessionStorage.getItem('vortexcoder_active_user');
+        if (!activeUser) return;
+
+        const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
+        const userData = users[activeUser];
+
+        if (userData) {
+            const displayCallsign = document.getElementById('profile-display-callsign');
+            const displaySerial = document.getElementById('profile-display-serial');
+            const displayRegDate = document.getElementById('profile-stat-reg-date');
+            const displayDownloads = document.getElementById('profile-stat-downloads');
+
+            if (displayCallsign) displayCallsign.textContent = activeUser;
+            
+            const serialNum = (typeof userData === 'string') ? 1 : (userData.serialNumber || 1);
+            const formattedSerial = String(serialNum).padStart(4, '0');
+            if (displaySerial) displaySerial.textContent = `SERIAL: #${formattedSerial}`;
+            
+            const regDate = (typeof userData === 'string') ? '24.05.2026 12:00:00' : (userData.registeredAt || '-');
+            if (displayRegDate) displayRegDate.textContent = regDate;
+            
+            const dls = (typeof userData === 'string') ? 0 : (userData.downloads || 0);
+            if (displayDownloads) displayDownloads.textContent = dls;
+        }
+
+        profileModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeProfileModal() {
+        profileModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    if (profileTrigger) profileTrigger.addEventListener('click', openProfileModal);
+    if (mobileProfileTrigger) mobileProfileTrigger.addEventListener('click', openProfileModal);
+    if (profileCloseBtn) profileCloseBtn.addEventListener('click', closeProfileModal);
+    if (profileModal) {
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) closeProfileModal();
+        });
+    }
+
+    // Logout
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('vortexcoder_active_user');
+            closeProfileModal();
+            updateAuthUI();
+            showToast('info', 'Secure session terminated (logged out).');
+        });
+    }
+
     // Login handler
     signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -767,18 +865,38 @@ function initAuthModal() {
         const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
         
         // Add a default guest user so they can log in even if they didn't register!
-        // Username: guest, Password: password
         if (Object.keys(users).length === 0) {
-            users['guest'] = 'password';
+            users['guest'] = {
+                password: 'password',
+                registeredAt: '24.05.2026 12:00:00',
+                serialNumber: 1,
+                downloads: 3
+            };
             localStorage.setItem('vortexcoder_users', JSON.stringify(users));
         }
 
-        if (users[username] && users[username] === password) {
+        const userData = users[username];
+        const isValid = userData && (typeof userData === 'string' ? userData === password : userData.password === password);
+
+        if (isValid) {
+            // Upgrade legacy string to object if necessary
+            if (typeof userData === 'string') {
+                users[username] = {
+                    password: password,
+                    registeredAt: '24.05.2026 12:00:00',
+                    serialNumber: Object.keys(users).indexOf(username) + 1,
+                    downloads: 0
+                };
+                localStorage.setItem('vortexcoder_users', JSON.stringify(users));
+            }
+
+            sessionStorage.setItem('vortexcoder_active_user', username);
             printAuthLog('[OK] Handshake verified. Access granted.', 'text-success');
             printAuthLog(`> Welcome back, Operator ${username}! Secure uplink established.`, 'text-success');
             showToast('success', `Access granted! Welcome back, ${username}.`);
             await new Promise(r => setTimeout(r, 1000));
             closeModal();
+            updateAuthUI();
         } else {
             printAuthLog('[ERR] Handshake failed: Invalid Operator Callsign or Passkey.', 'text-error');
             showToast('error', 'Login failed: Invalid credentials.');
@@ -806,12 +924,27 @@ function initAuthModal() {
 
         const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
 
+        // Initialize default guest if empty so that guest remains Serial #0001
+        if (Object.keys(users).length === 0) {
+            users['guest'] = {
+                password: 'password',
+                registeredAt: '24.05.2026 12:00:00',
+                serialNumber: 1,
+                downloads: 3
+            };
+        }
+
         if (users[username]) {
             printAuthLog(`[ERR] Registration failed: Callsign "${username}" is already claimed by another operator.`, 'text-error');
             showToast('error', 'Registration failed: Callsign already exists.');
         } else {
             // Save to local storage
-            users[username] = password;
+            users[username] = {
+                password: password,
+                registeredAt: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                serialNumber: Object.keys(users).length + 1,
+                downloads: 0
+            };
             localStorage.setItem('vortexcoder_users', JSON.stringify(users));
 
             printAuthLog('[OK] Unique signature generated.', 'text-success');
@@ -826,6 +959,46 @@ function initAuthModal() {
             printAuthLog('> Switched to Sign In. Please verify your credentials to establish uplink.');
         }
     });
+
+    // Session time tracking
+    let sessionStartTime = Date.now();
+    setInterval(() => {
+        const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+        const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+        const s = String(elapsed % 60).padStart(2, '0');
+        const timeEl = document.getElementById('profile-stat-time');
+        if (timeEl) timeEl.textContent = `${h}:${m}:${s}`;
+    }, 1000);
+
+    // Downloads tracking
+    document.querySelectorAll('.download-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const activeUser = sessionStorage.getItem('vortexcoder_active_user');
+            if (activeUser) {
+                const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
+                const userData = users[activeUser];
+                if (userData) {
+                    if (typeof userData === 'string') {
+                        users[activeUser] = {
+                            password: userData,
+                            registeredAt: '24.05.2026 12:00:00',
+                            serialNumber: 1,
+                            downloads: 0
+                        };
+                    }
+                    users[activeUser].downloads = (users[activeUser].downloads || 0) + 1;
+                    localStorage.setItem('vortexcoder_users', JSON.stringify(users));
+                    
+                    const dlEl = document.getElementById('profile-stat-downloads');
+                    if (dlEl) dlEl.textContent = users[activeUser].downloads;
+                }
+            }
+        });
+    });
+
+    // Run initial UI state check
+    updateAuthUI();
 }
 
 /* =========================================================================

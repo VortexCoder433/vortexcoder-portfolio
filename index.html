@@ -41,6 +41,10 @@
                 <div class="mobile-auth-buttons">
                     <button class="btn-auth btn-signin-mobile" id="mobile-signin-trigger">Sign In</button>
                     <button class="btn-auth btn-signup-mobile" id="mobile-signup-trigger">Sign Up</button>
+                    <button class="btn-auth btn-profile btn-signup-mobile hidden" id="mobile-profile-trigger">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span id="mobile-profile-btn-text">Profile</span>
+                    </button>
                 </div>
             </nav>
 
@@ -58,6 +62,10 @@
                 <div class="auth-buttons">
                     <button class="btn-auth btn-signin" id="signin-trigger">Sign In</button>
                     <button class="btn-auth btn-signup" id="signup-trigger">Sign Up</button>
+                    <button class="btn-auth btn-profile hidden" id="profile-trigger">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span id="profile-btn-text">Profile</span>
+                    </button>
                 </div>
             </div>
 
@@ -507,6 +515,47 @@
             
             <div class="auth-terminal-log" id="auth-terminal-log">
                 <p class="auth-log-line text-muted">> Idle. Awaiting authentication inputs...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glassmorphic Profile Modal -->
+    <div class="auth-modal-overlay hidden" id="profile-modal">
+        <div class="auth-modal">
+            <button class="auth-modal-close" id="profile-modal-close">&times;</button>
+            <div class="auth-form-title">OPERATOR PROFILE CONFIGURATION</div>
+            
+            <div class="profile-details-grid">
+                <!-- Avatar / Callsign -->
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar-icon">
+                        <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div class="profile-callsign" id="profile-display-callsign">VortexOperator</div>
+                    <div class="profile-badge" id="profile-display-serial">SERIAL: #0001</div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="profile-stats-section">
+                    <div class="stats-title">> SYSTEM STATISTICS</div>
+                    <div class="stat-item">
+                        <span class="stat-label">Registration Date:</span>
+                        <span class="stat-value" id="profile-stat-reg-date">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Session Active Time:</span>
+                        <span class="stat-value" id="profile-stat-time">00:00:00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Project Downloads:</span>
+                        <span class="stat-value" id="profile-stat-downloads">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile actions (Logout) -->
+            <div class="profile-actions">
+                <button class="btn btn-primary btn-logout w-full" id="btn-logout">TERMINATE SESSION (LOGOUT)</button>
             </div>
         </div>
     </div>
