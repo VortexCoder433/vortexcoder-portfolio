@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 # Import bottle
 try:
-    from bottle import route, run, request, response, post, options
+    from bottle import route, run, request, response, post
 except ImportError as e:
     import traceback
     traceback.print_exc()
@@ -87,9 +87,9 @@ def save_user(username, email, password):
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump(users, f, indent=4)
 
-@options('/api/register')
-@options('/api/verify')
-@options('/api/login')
+@route('/api/register', method='OPTIONS')
+@route('/api/verify', method='OPTIONS')
+@route('/api/login', method='OPTIONS')
 @enable_cors
 def setup_options():
     return {}
