@@ -38,17 +38,27 @@
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#contact" class="nav-link">Terminal</a>
+                <div class="mobile-auth-buttons">
+                    <button class="btn-auth btn-signin-mobile" id="mobile-signin-trigger">Sign In</button>
+                    <button class="btn-auth btn-signup-mobile" id="mobile-signup-trigger">Sign Up</button>
+                </div>
             </nav>
 
-            <div class="social-links">
-                <a href="https://github.com/VortexCoder433" target="_blank" class="social-icon" aria-label="GitHub">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                </a>
-                <a href="https://kwork.ru/user/vortex033" target="_blank" class="social-icon" aria-label="Kwork">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                    </svg>
-                </a>
+            <div class="header-right-group">
+                <div class="social-links">
+                    <a href="https://github.com/VortexCoder433" target="_blank" class="social-icon" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    </a>
+                    <a href="https://kwork.ru/user/vortex033" target="_blank" class="social-icon" aria-label="Kwork">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </a>
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn-auth btn-signin" id="signin-trigger">Sign In</button>
+                    <button class="btn-auth btn-signup" id="signup-trigger">Sign Up</button>
+                </div>
             </div>
 
             <button class="mobile-toggle" aria-label="Toggle navigation menu">
@@ -457,6 +467,55 @@
             </div>
         </div>
     </footer>
+
+    <!-- Glassmorphic Auth Modal -->
+    <div class="auth-modal-overlay hidden" id="auth-modal">
+        <div class="auth-modal">
+            <button class="auth-modal-close" id="auth-modal-close">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-signin-btn">Sign In</button>
+                <button class="auth-tab" id="tab-signup-btn">Sign Up</button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <form class="auth-form" id="signin-form">
+                <div class="auth-form-title">AUTHENTICATION PROTOCOL</div>
+                <div class="form-group">
+                    <label for="signin-email">> EMAIL_ADDRESS:</label>
+                    <input type="email" id="signin-email" required placeholder="operator@vortexcoder.net">
+                </div>
+                <div class="form-group">
+                    <label for="signin-password">> ACCESS_PASSKEY:</label>
+                    <input type="password" id="signin-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow-violet w-full">ESTABLISH UPLINK</button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form class="auth-form hidden" id="signup-form">
+                <div class="auth-form-title">REGISTER NEW OPERATOR</div>
+                <div class="form-row-auth">
+                    <div class="form-group">
+                        <label for="signup-username">> OPERATOR_CALLSIGN:</label>
+                        <input type="text" id="signup-username" required placeholder="VortexOperator_01">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">> SECURE_EMAIL:</label>
+                        <input type="email" id="signup-email" required placeholder="operator@vortexcoder.net">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">> DEFINE_PASSKEY:</label>
+                    <input type="password" id="signup-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow-cyan w-full">GENERATE CREDENTIALS</button>
+            </form>
+            
+            <div class="auth-terminal-log" id="auth-terminal-log">
+                <p class="auth-log-line text-muted">> Idle. Awaiting authentication inputs...</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Audio Synthesis warning and Status toaster -->
     <div class="toast-container" id="toast-container"></div>

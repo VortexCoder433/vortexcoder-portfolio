@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initNovaBeatSequencer();
     initNovaAmbientSynth();
     initTerminalContactForm();
+    initAuthModal();
+    initLogo3DInteraction();
 });
 
 /* =========================================================================
@@ -668,4 +670,174 @@ function showToast(type, text) {
         toast.style.animation = 'toast-in 0.3s reverse forwards';
         setTimeout(() => toast.remove(), 300);
     }, 4500);
+}
+
+/* =========================================================================
+   7. Glassmorphic Auth Modal (Sign In / Sign Up)
+   ========================================================================= */
+function initAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    const closeBtn = document.getElementById('auth-modal-close');
+    
+    const signinTriggers = [
+        document.getElementById('signin-trigger'),
+        document.getElementById('mobile-signin-trigger')
+    ];
+    const signupTriggers = [
+        document.getElementById('signup-trigger'),
+        document.getElementById('mobile-signup-trigger')
+    ];
+
+    const tabSignin = document.getElementById('tab-signin-btn');
+    const tabSignup = document.getElementById('tab-signup-btn');
+    
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+    const log = document.getElementById('auth-terminal-log');
+
+    function printAuthLog(text, styleClass = '') {
+        const p = document.createElement('p');
+        p.className = `auth-log-line ${styleClass}`;
+        p.textContent = text;
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function openModal(tab = 'signin') {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
+        switchTab(tab);
+    }
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        signinForm.reset();
+        signupForm.reset();
+        log.innerHTML = '<p class="auth-log-line text-muted">> Idle. Awaiting authentication inputs...</p>';
+    }
+
+    function switchTab(tab) {
+        if (tab === 'signin') {
+            tabSignin.classList.add('active');
+            tabSignup.classList.remove('active');
+            signinForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        } else {
+            tabSignin.classList.remove('active');
+            tabSignup.classList.add('active');
+            signinForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        }
+    }
+
+    // Attach open triggers
+    signinTriggers.forEach(t => {
+        if (t) t.addEventListener('click', () => openModal('signin'));
+    });
+    signupTriggers.forEach(t => {
+        if (t) t.addEventListener('click', () => openModal('signup'));
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // Tab buttons
+    tabSignin.addEventListener('click', () => switchTab('signin'));
+    tabSignup.addEventListener('click', () => switchTab('signup'));
+
+    // Simulated login handler
+    signinForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('signin-email').value;
+        
+        log.innerHTML = ''; // Clear logs
+        printAuthLog('> Initializing authorization sequence...');
+        printAuthLog(`> Dialing secure authentication cluster for ${email}...`);
+        await new Promise(r => setTimeout(r, 600));
+        
+        printAuthLog('> Establishing TLS handshake. Cipher key accepted.');
+        printAuthLog('> Comparing passkey against directory hash...');
+        await new Promise(r => setTimeout(r, 800));
+
+        printAuthLog('[OK] Access authorization: COMPLETED.', 'text-success');
+        printAuthLog('> Establishing secure session token...', 'text-success');
+        
+        showToast('success', `Welcome back, operator! Authorized as ${email}.`);
+        
+        await new Promise(r => setTimeout(r, 800));
+        closeModal();
+    });
+
+    // Simulated registration handler
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('signup-username').value;
+        const email = document.getElementById('signup-email').value;
+
+        log.innerHTML = ''; // Clear logs
+        printAuthLog('> Registering new operator protocols...');
+        printAuthLog(`> Compiling parameters for callsign: ${username}...`);
+        await new Promise(r => setTimeout(r, 600));
+
+        printAuthLog(`> Transmitting validation token to ${email}...`);
+        printAuthLog('> Creating unique operator profile database records...');
+        await new Promise(r => setTimeout(r, 800));
+
+        printAuthLog('[OK] Registration validation: COMPLETED.', 'text-success');
+        printAuthLog(`> Operator ${username} initialized successfully!`, 'text-success');
+
+        showToast('success', `Operator ${username} registered. Welcome to the system!`);
+
+        await new Promise(r => setTimeout(r, 800));
+        closeModal();
+    });
+}
+
+/* =========================================================================
+   8. 3D Logo Interactive Rotation & Click Spin
+   ========================================================================= */
+function initLogo3DInteraction() {
+    const container = document.querySelector('.logo-sphere-container');
+    const avatar = document.querySelector('.hero-avatar');
+    if (!container || !avatar) return;
+
+    // 3D tilt tracking on mousemove
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        
+        // Coordinates relative to the center of the container
+        const x = e.clientX - rect.left - (rect.width / 2);
+        const y = e.clientY - rect.top - (rect.height / 2);
+        
+        // Calculate angles (max ~20 degrees rotation)
+        const rx = -(y / (rect.height / 2)) * 20;
+        const ry = (x / (rect.width / 2)) * 20;
+        
+        avatar.style.setProperty('--rx', `${rx}deg`);
+        avatar.style.setProperty('--ry', `${ry}deg`);
+    });
+
+    // Smooth reset on mouseleave
+    container.addEventListener('mouseleave', () => {
+        avatar.style.setProperty('--rx', '0deg');
+        avatar.style.setProperty('--ry', '0deg');
+    });
+
+    // Quick spin spin animation on click
+    let currentRotation = 0;
+    container.addEventListener('click', () => {
+        currentRotation += 360;
+        avatar.style.transform = `rotateX(var(--rx, 0deg)) rotateY(calc(var(--ry, 0deg) + ${currentRotation}deg)) scale(1.05)`;
+        
+        showToast('info', 'System core spun. Visual sync established.');
+
+        setTimeout(() => {
+            avatar.style.transform = `rotateX(var(--rx, 0deg)) rotateY(calc(var(--ry, 0deg) + ${currentRotation}deg)) scale(1)`;
+        }, 300);
+    });
 }

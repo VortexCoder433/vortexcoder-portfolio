@@ -1274,3 +1274,282 @@ body {
         text-align: center;
     }
 }
+
+/* Header Right Group & Auth Buttons */
+.header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-auth {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    will-change: transform, background-color, border-color, box-shadow, color;
+    transition: transform var(--transition-speed) ease,
+                background-color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease,
+                box-shadow var(--transition-speed) ease,
+                color var(--transition-speed) ease;
+}
+
+.btn-signin {
+    border-color: rgba(6, 182, 212, 0.4);
+    color: var(--neon-cyan);
+}
+
+.btn-signin:hover {
+    background-color: rgba(6, 182, 212, 0.08);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--neon-cyan-glow);
+    transform: translateY(-1px);
+}
+
+.btn-signup {
+    background: linear-gradient(135deg, var(--neon-violet), var(--neon-magenta));
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+}
+
+.btn-signup:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+    filter: brightness(1.1);
+}
+
+.mobile-auth-buttons {
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border-color);
+}
+
+.btn-signin-mobile,
+.btn-signup-mobile {
+    width: 100%;
+    padding: 0.6rem;
+}
+
+.btn-signin-mobile {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+}
+
+.btn-signup-mobile {
+    background: linear-gradient(135deg, var(--neon-violet), var(--neon-magenta));
+    color: #fff;
+}
+
+/* Glassmorphic Auth Modal Overlay */
+.auth-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(4, 4, 6, 0.85);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 1;
+    will-change: opacity;
+    transition: opacity 0.3s ease;
+}
+
+.auth-modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.auth-modal {
+    background: rgba(13, 13, 20, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 440px;
+    max-width: 90vw;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(6, 182, 212, 0.15);
+    position: relative;
+    transform: scale(1);
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.auth-modal-overlay.hidden .auth-modal {
+    transform: scale(0.85);
+}
+
+.auth-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.75rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.auth-modal-close:hover {
+    color: var(--text-primary);
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.75rem;
+}
+
+.auth-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.75rem;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.auth-tab:hover {
+    color: var(--text-secondary);
+}
+
+.auth-tab.active {
+    color: var(--text-primary);
+}
+
+.auth-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.auth-form.hidden {
+    display: none;
+}
+
+.auth-form-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.form-row-auth {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.auth-terminal-log {
+    background: rgba(4, 4, 6, 0.7);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    margin-top: 1.5rem;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.auth-log-line {
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.auth-log-line.text-success {
+    color: var(--neon-teal);
+}
+
+.auth-log-line.text-muted {
+    color: var(--text-muted);
+}
+
+/* Retro Cyberpunk Scanlines overlay */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.18;
+}
+
+/* 3D Orbiting Logo Visual Effects */
+.logo-sphere-container {
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.hero-avatar {
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1);
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+    will-change: transform, box-shadow;
+}
+
+.logo-sphere-container:hover .hero-avatar {
+    box-shadow: 0 0 50px rgba(6, 182, 212, 0.4), 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.logo-sphere-container:active .hero-avatar {
+    transform: scale(0.95) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+
+@media (max-width: 768px) {
+    .header-right-group {
+        display: none; /* Collapsed in mobile nav */
+    }
+    
+    .mobile-auth-buttons {
+        display: flex; /* Shown inside mobile menu */
+    }
+}
+
