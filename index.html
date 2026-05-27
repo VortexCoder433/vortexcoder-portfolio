@@ -481,8 +481,8 @@
             <form class="auth-form" id="signin-form">
                 <div class="auth-form-title">AUTHENTICATION PROTOCOL</div>
                 <div class="form-group">
-                    <label for="signin-email">> EMAIL_ADDRESS:</label>
-                    <input type="email" id="signin-email" required placeholder="operator@vortexcoder.net">
+                    <label for="signin-username">> OPERATOR_CALLSIGN:</label>
+                    <input type="text" id="signin-username" required placeholder="VortexOperator_01">
                 </div>
                 <div class="form-group">
                     <label for="signin-password">> ACCESS_PASSKEY:</label>
@@ -494,31 +494,15 @@
             <!-- Sign Up Form -->
             <form class="auth-form hidden" id="signup-form">
                 <div class="auth-form-title">REGISTER NEW OPERATOR</div>
-                <div class="form-row-auth">
-                    <div class="form-group">
-                        <label for="signup-username">> OPERATOR_CALLSIGN:</label>
-                        <input type="text" id="signup-username" required placeholder="VortexOperator_01">
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-email">> SECURE_EMAIL:</label>
-                        <input type="email" id="signup-email" required placeholder="operator@vortexcoder.net">
-                    </div>
+                <div class="form-group">
+                    <label for="signup-username">> OPERATOR_CALLSIGN:</label>
+                    <input type="text" id="signup-username" required placeholder="VortexOperator_01">
                 </div>
                 <div class="form-group">
                     <label for="signup-password">> DEFINE_PASSKEY:</label>
                     <input type="password" id="signup-password" required placeholder="••••••••">
                 </div>
                 <button type="submit" class="btn btn-primary btn-glow-cyan w-full">GENERATE CREDENTIALS</button>
-            </form>
-
-            <!-- Verification Code Form -->
-            <form class="auth-form hidden" id="verify-form">
-                <div class="auth-form-title">VERIFY OPERATOR UPLINK</div>
-                <div class="form-group">
-                    <label for="verify-code">> ENTER_6_DIGIT_OTP_CODE:</label>
-                    <input type="text" id="verify-code" required placeholder="123456" maxlength="6" pattern="[0-9]{6}">
-                </div>
-                <button type="submit" class="btn btn-primary btn-glow-cyan w-full">CONFIRM UPLINK</button>
             </form>
             
             <div class="auth-terminal-log" id="auth-terminal-log">
