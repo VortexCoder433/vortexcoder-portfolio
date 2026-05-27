@@ -786,8 +786,8 @@ function initAuthModal() {
                 showToast('error', `Login failed: ${data.message}`);
             }
         } catch (err) {
-            // Local server offline - Fallback to simulation
-            printAuthLog('[WARN] Local authentication node is offline.', 'text-muted');
+            console.error("Login connection failed:", err);
+            printAuthLog(`[WARN] Network error: ${err.message}`, 'text-error');
             printAuthLog('> Redirecting authorization to offline simulator cache...');
             await new Promise(r => setTimeout(r, 600));
             
@@ -836,8 +836,8 @@ function initAuthModal() {
                 showToast('error', `Registration failed: ${data.message}`);
             }
         } catch (err) {
-            // Local server offline - Fallback to simulation
-            printAuthLog('[WARN] Local registration node is offline.', 'text-muted');
+            console.error("Registration connection failed:", err);
+            printAuthLog(`[WARN] Network error: ${err.message}`, 'text-error');
             printAuthLog('> Redirecting registration to offline simulator proxy...');
             await new Promise(r => setTimeout(r, 600));
 
