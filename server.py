@@ -9,7 +9,10 @@ from datetime import datetime, timedelta
 # Import bottle
 try:
     from bottle import route, run, request, response, post, options
-except ImportError:
+except ImportError as e:
+    import traceback
+    traceback.print_exc()
+    print(f"Import error: {e}")
     print("Bottle framework is not installed. Please run: pip install bottle")
     sys.exit(1)
 
