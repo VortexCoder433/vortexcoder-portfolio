@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaCoder | Creative Desktop & Web Developer</title>
+    <meta name="description" content="Portfolio of NovaCoder, a creative developer specializing in desktop overlays, audio synthesis, and cyberpunk glassmorphic interfaces.">
+    <meta name="author" content="NovaCoder">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://novacoder.github.io/">
+    <meta property="og:title" content="NovaCoder | Creative Desktop & Web Developer">
+    <meta property="og:description" content="Portfolio of NovaCoder, showcasing NovaCode, NovaBeat, and NovaAmbient Studio.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Canvas Particles -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo-container">
+                <img src="assets/logo.png" alt="NovaCoder Logo" class="nav-logo">
+                <span class="logo-text">Nova<span>Coder</span></span>
+            </a>
+            
+            <nav class="nav">
+                <a href="#about" class="nav-link">Home</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#contact" class="nav-link">Terminal</a>
+            </nav>
+
+            <div class="social-links">
+                <a href="https://github.com/NovaCoder" target="_blank" class="social-icon" aria-label="GitHub">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+                <a href="https://kwork.ru/user/novacoder" target="_blank" class="social-icon" aria-label="Kwork">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <button class="mobile-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section id="about" class="section hero-section">
+            <div class="hero-content">
+                <div class="badge neon-glow-cyan">🚀 Available for Projects</div>
+                <h1 class="hero-title">
+                    Hi, I'm <span class="glow-text">NovaCoder</span>
+                </h1>
+                <h2 class="hero-subtitle">Creative Desktop & Web Developer</h2>
+                <p class="hero-desc">
+                    I craft lightweight, high-performance applications and websites with stunning interactive user interfaces. Specializing in borderless window tools, audio synthesis, and cyberpunk aesthetics.
+                </p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn btn-primary btn-glow-violet">Explore Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="logo-sphere-container">
+                    <div class="sphere-orbit">
+                        <div class="orbit-node node-1"></div>
+                        <div class="orbit-node node-2"></div>
+                        <div class="orbit-node node-3"></div>
+                    </div>
+                    <img src="assets/logo.png" alt="NovaCoder Orb" class="hero-avatar">
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Showcase Section -->
+        <section id="projects" class="section projects-section">
+            <div class="section-header">
+                <h2 class="section-title">🪐 Feature Projects</h2>
+                <p class="section-subtitle">Interact with dynamic demos built using the Web Audio API directly in your browser.</p>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Project 1: NovaCode Studio -->
+                <article class="project-card card-violet">
+                    <div class="project-img-wrapper">
+                        <img src="assets/novacode.png" alt="NovaCode Studio Preview" class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-type">Desktop App / Web IDE</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-header-row">
+                            <h3 class="project-title">NovaCode Studio</h3>
+                            <span class="project-version">v1.0.0</span>
+                        </div>
+                        <p class="project-description">
+                            A lightweight, modular code editor built with Python and Monaco Editor. Features live file trees, a command palette, split view, Zen mode, and a local live server watcher.
+                        </p>
+                        
+                        <div class="project-tags">
+                            <span>Python</span>
+                            <span>pywebview</span>
+                            <span>Monaco Editor</span>
+                            <span>Vanilla JS</span>
+                        </div>
+                        
+                        <!-- Mini Preview/Action Panel -->
+                        <div class="project-widget text-widget">
+                            <div class="widget-title">💻 Highlights</div>
+                            <ul class="widget-list">
+                                <li><strong>Breadcrumbs Navigation:</strong> Multi-segment clickable folder navigation.</li>
+                                <li><strong>Zen Mode:</strong> Distraction-free full-screen writing (`Ctrl+K Z`).</li>
+                                <li><strong>Fuzzy Search:</strong> Command palette via `Ctrl+Shift+P`.</li>
+                            </ul>
+                        </div>
+
+                        <div class="project-links">
+                            <a href="https://github.com/NovaCoder/novacode-studio" target="_blank" class="btn-project-link">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                GitHub
+                            </a>
+                            <a href="https://github.com/NovaCoder/novacode-studio/archive/refs/heads/main.zip" class="btn-project-link download-btn">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+                                Download .ZIP
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 2: NovaBeat Studio -->
+                <article class="project-card card-magenta">
+                    <div class="project-img-wrapper">
+                        <img src="assets/novabeat.png" alt="NovaBeat Studio Preview" class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-type">Web Audio Step-Sequencer</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-header-row">
+                            <h3 class="project-title">NovaBeat Studio</h3>
+                            <span class="project-version">v1.0.4</span>
+                        </div>
+                        <p class="project-description">
+                            An electron/web step sequencer. Synthesizes drums procedurally using the Web Audio API (low-pass sweeps, noise sources) with BPM controls, custom preset saving, and mute-solo channels.
+                        </p>
+                        
+                        <div class="project-tags">
+                            <span>Web Audio API</span>
+                            <span>JavaScript</span>
+                            <span>SVG Icons</span>
+                            <span>Vanilla CSS</span>
+                        </div>
+                        
+                        <!-- Interactive Sequencer Widget -->
+                        <div class="project-widget beat-widget">
+                            <div class="widget-header">
+                                <div class="widget-title">🥁 Live Sequencer Demo</div>
+                                <div class="beat-controls">
+                                    <button class="beat-btn play-beat-btn" id="play-beat">
+                                        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        Play
+                                    </button>
+                                    <div class="bpm-control">
+                                        <span id="bpm-val">120</span> <span class="unit">BPM</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="sequencer-grid">
+                                <div class="seq-row" data-inst="kick">
+                                    <span class="seq-label">KICK</span>
+                                    <div class="steps-row">
+                                        <button class="step" data-step="0"></button>
+                                        <button class="step" data-step="1"></button>
+                                        <button class="step" data-step="2"></button>
+                                        <button class="step" data-step="3"></button>
+                                        <button class="step" data-step="4"></button>
+                                        <button class="step" data-step="5"></button>
+                                        <button class="step" data-step="6"></button>
+                                        <button class="step" data-step="7"></button>
+                                    </div>
+                                </div>
+                                <div class="seq-row" data-inst="hat">
+                                    <span class="seq-label">HIHAT</span>
+                                    <div class="steps-row">
+                                        <button class="step" data-step="0"></button>
+                                        <button class="step" data-step="1"></button>
+                                        <button class="step" data-step="2"></button>
+                                        <button class="step" data-step="3"></button>
+                                        <button class="step" data-step="4"></button>
+                                        <button class="step" data-step="5"></button>
+                                        <button class="step" data-step="6"></button>
+                                        <button class="step" data-step="7"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-links">
+                            <a href="https://github.com/NovaCoder/novabeat-studio" target="_blank" class="btn-project-link">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                GitHub
+                            </a>
+                            <a href="https://github.com/NovaCoder/novabeat-studio/archive/refs/heads/main.zip" class="btn-project-link download-btn">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+                                Download .ZIP
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 3: NovaAmbient Studio -->
+                <article class="project-card card-teal">
+                    <div class="project-img-wrapper">
+                        <img src="assets/novambient.png" alt="NovaAmbient Studio Preview" class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-type">Desktop Overlay & Synth</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-header-row">
+                            <h3 class="project-title">NovaAmbient Studio</h3>
+                            <span class="project-version">v1.1.2</span>
+                        </div>
+                        <p class="project-description">
+                            A dynamic ambient soundscape player with a borderless click-through overlay mode. Generates procedurally calculated audio and displays full-screen screen effects like rain, campfire embers, and lightning.
+                        </p>
+                        
+                        <div class="project-tags">
+                            <span>Python / ctypes</span>
+                            <span>Web Audio DSP</span>
+                            <span>Canvas Effects</span>
+                            <span>Alt+Shift+O Hotkey</span>
+                        </div>
+                        
+                        <!-- Interactive Synthesizer Widget -->
+                        <div class="project-widget ambient-widget">
+                            <div class="widget-header">
+                                <div class="widget-title">🍃 Live Synthesizer Demo</div>
+                                <button class="beat-btn play-ambient-btn" id="play-ambient">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    Play Sounds
+                                </button>
+                            </div>
+                            
+                            <div class="ambient-controls">
+                                <div class="ambient-row">
+                                    <span class="ambient-label">Rain Intensity</span>
+                                    <input type="range" class="ambient-slider" id="rain-vol" min="0" max="100" value="40" disabled>
+                                </div>
+                                <div class="ambient-row">
+                                    <span class="ambient-label">Campfire Crackle</span>
+                                    <input type="range" class="ambient-slider" id="fire-vol" min="0" max="100" value="0" disabled>
+                                </div>
+                                <div class="ambient-row">
+                                    <span class="ambient-label">Wind Sweep</span>
+                                    <input type="range" class="ambient-slider" id="wind-vol" min="0" max="100" value="20" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-links">
+                            <a href="https://github.com/NovaCoder/novambient-studio" target="_blank" class="btn-project-link">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                                GitHub
+                            </a>
+                            <a href="https://github.com/NovaCoder/novambient-studio/archive/refs/heads/main.zip" class="btn-project-link download-btn">
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+                                Download .ZIP
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section skills-section">
+            <div class="section-header">
+                <h2 class="section-title">📊 Technical Stack</h2>
+                <p class="section-subtitle">Technologies and toolsets I use to craft fast, responsive and interactive apps.</p>
+            </div>
+
+            <div class="skills-grid">
+                <div class="skills-category-card">
+                    <h3 class="category-title">Core Development</h3>
+                    <div class="skills-list">
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Python (Desktop & APIs)</span>
+                                <span class="skill-percent">90%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-violet" style="width: 90%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">JavaScript (ES6+ / Web Audio)</span>
+                                <span class="skill-percent">85%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-magenta" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">HTML5 / Semantic Layouts</span>
+                                <span class="skill-percent">95%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-cyan" style="width: 95%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">CSS3 (Gradients & Keyframes)</span>
+                                <span class="skill-percent">90%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-teal" style="style: width: 90%; width: 90%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills-category-card">
+                    <h3 class="category-title">Audio & Desktop Integrations</h3>
+                    <div class="skills-list">
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Web Audio API Synthesis</span>
+                                <span class="skill-percent">80%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-magenta" style="width: 80%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Win32 API (ctypes overlays)</span>
+                                <span class="skill-percent">75%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-teal" style="width: 75%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">pywebview / Electron GUI</span>
+                                <span class="skill-percent">85%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-violet" style="width: 85%"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Git & GitHub Actions</span>
+                                <span class="skill-percent">80%</span>
+                            </div>
+                            <div class="skill-bar"><div class="skill-fill neon-fill-cyan" style="width: 80%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section / Terminal -->
+        <section id="contact" class="section contact-section">
+            <div class="section-header">
+                <h2 class="section-title">✉️ Secure Contact Terminal</h2>
+                <p class="section-subtitle">Send a secure message directly to my Telegram inbox using the visual console below.</p>
+            </div>
+
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="terminal-title">novacoder@ssh-gateway:~</div>
+                    <div class="terminal-status">CONNECTED</div>
+                </div>
+                
+                <div class="terminal-body">
+                    <div class="terminal-log" id="terminal-log">
+                        <p class="log-line text-muted">Initialize secure handshake connection...</p>
+                        <p class="log-line text-success">Handshake approved. Port open on tunnel #4489.</p>
+                        <p class="log-line">Ready to compile message. Please complete inputs below.</p>
+                    </div>
+
+                    <form class="terminal-form" id="contact-form" novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="form-name">> SENDER_NAME:</label>
+                                <input type="text" id="form-name" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-email">> SENDER_EMAIL:</label>
+                                <input type="email" id="form-email" required placeholder="john@example.com">
+                            </div>
+                        </div>
+                        <div class="form-group msg-group">
+                            <label for="form-message">> MESSAGE_BODY:</label>
+                            <textarea id="form-message" required placeholder="Type your message here..." rows="4"></textarea>
+                        </div>
+
+                        <!-- Configuration values for Telegram. 
+                             Users can change these tokens directly in the code or use the gateway simulator. -->
+                        <div class="config-toggle-row">
+                            <button type="button" class="btn-toggle-config" id="toggle-config-btn">
+                                🔧 Configure Custom Telegram Bot API (Optional)
+                            </button>
+                        </div>
+                        <div class="tg-config-inputs hidden" id="tg-config-panel">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="form-bot-token">> TG_BOT_TOKEN:</label>
+                                    <input type="password" id="form-bot-token" placeholder="Optional bot token">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-chat-id">> TG_CHAT_ID:</label>
+                                    <input type="text" id="form-chat-id" placeholder="Optional chat ID">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="terminal-footer">
+                            <div class="command-input-line">
+                                <span class="prompt-arrow">$</span>
+                                <span class="input-simulation-text">execute --transmit --secure</span>
+                            </div>
+                            <button type="submit" class="btn-submit" id="btn-submit-form">
+                                ⚡ TRANSMIT MESSAGE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="copyright">&copy; 2026 NovaCoder. Crafted with glassmorphic aesthetic.</p>
+            <div class="footer-links">
+                <a href="#about">Home</a>
+                <a href="#projects">Projects</a>
+                <a href="#skills">Skills</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio Synthesis warning and Status toaster -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
