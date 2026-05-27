@@ -1,6 +1,6 @@
-# NovaCoder Portfolio 🪐
+# VortexCoder Portfolio 🪐
 
-Добро пожаловать в персональное интерактивное портфолио **NovaCoder**! Этот проект является единой витриной для трех наших ключевых разработок:
+Добро пожаловать в персональное интерактивное портфолио **VortexCoder**! Этот проект является единой витриной для трех наших ключевых разработок:
 1. **NovaCode Studio** — Легковесный текстовый редактор с интеграцией Monaco Editor.
 2. **NovaBeat Studio** — Веб-синтезатор барабанных сэмплов и степ-секвенсор.
 3. **NovaAmbient Studio** — Эмбиент-плеер с режимом оверлея на рабочий стол.
@@ -53,14 +53,14 @@ npx serve
 ## 📦 Деплой на GitHub Pages
 
 Проект готов к публикации на GitHub Pages.
-1. Создайте публичный репозиторий `novacoder-portfolio` на GitHub.
+1. Создайте публичный репозиторий `vortexcoder-portfolio` на GitHub.
 2. Выполните пуш кода в репозиторий:
    ```bash
-   git remote add origin https://github.com/NovaCoder/novacoder-portfolio.git
+   git remote add origin https://github.com/VortexCoder433/vortexcoder-portfolio.git
    git branch -M main
    git add .
    git commit -m "feat: initial release of portfolio showcase"
    git push -u origin main
    ```
 3. Перейдите в настройки репозитория (**Settings -> Pages**) и выберите ветку `main` в качестве источника.
-4. Ваш сайт будет доступен по адресу `https://novacoder.github.io/novacoder-portfolio/`.
+4. Ваш сайт будет доступен по адресу `https://vortexcoder433.github.io/vortexcoder-portfolio/`.

@@ -1,5 +1,5 @@
 /**
- * NovaCoder Portfolio — Interactive Features
+ * VortexCoder Portfolio — Interactive Features
  * Canvas Particles, Web Audio Drum Sequencer & Procedural Ambient DSP, and SSH Contact Terminal.
  */
 
@@ -586,7 +586,7 @@ function initTerminalContactForm() {
         await new Promise(r => setTimeout(r, 800));
 
         // Format message
-        const textPayload = `⚡ New NovaCoder Portfolio message!\n👤 Sender: ${name}\n📧 Email: ${email}\n\n📝 Message:\n${message}`;
+        const textPayload = `⚡ New VortexCoder Portfolio message!\n👤 Sender: ${name}\n📧 Email: ${email}\n\n📝 Message:\n${message}`;
 
         // Send logic
         if (customToken && customChatId) {
@@ -621,7 +621,7 @@ function initTerminalContactForm() {
         } else {
             // Default simulator transmission (with beautiful SSH visual log)
             printLine('> No custom Telegram credential key found.');
-            printLine('> Forwarding payload to NovaCoder simulator gateway...');
+            printLine('> Forwarding payload to VortexCoder simulator gateway...');
             await new Promise(r => setTimeout(r, 600));
             printLine('[OK] connection_redirected: proxy_channel_approved.', 'text-success');
             printLine('[OK] payload_transmitted: 200 SUCCESS (SIMULATED).', 'text-success');
