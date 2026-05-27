@@ -65,7 +65,8 @@ function initCanvasParticles() {
     let height = canvas.height = window.innerHeight;
 
     const particles = [];
-    const maxParticles = Math.min(100, Math.floor((width * height) / 15000));
+    // Optimized particle count for buttery smooth rendering (especially on low-end mobile devices)
+    const maxParticles = Math.min(45, Math.floor((width * height) / 35000));
     const connectionDist = 120;
     
     const mouse = { x: null, y: null, active: false };
@@ -98,11 +99,14 @@ function initCanvasParticles() {
             if (mouse.active && mouse.x !== null) {
                 const dx = mouse.x - this.x;
                 const dy = mouse.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 200) {
-                    const force = (200 - dist) / 200;
-                    this.x += (dx / dist) * force * 0.8;
-                    this.y += (dy / dist) * force * 0.8;
+                const distSq = dx * dx + dy * dy;
+                if (distSq < 40000) { // 200 * 200
+                    const dist = Math.sqrt(distSq);
+                    if (dist > 0) {
+                        const force = (200 - dist) / 200;
+                        this.x += (dx / dist) * force * 0.8;
+                        this.y += (dy / dist) * force * 0.8;
+                    }
                 }
             }
         }
@@ -146,13 +150,16 @@ function initCanvasParticles() {
             p1.update();
             p1.draw();
 
+            const connectionDistSq = connectionDist * connectionDist;
             for (let j = i + 1; j < particles.length; j++) {
                 const p2 = particles[j];
                 const dx = p1.x - p2.x;
                 const dy = p1.y - p2.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+                const distSq = dx * dx + dy * dy;
 
-                if (dist < connectionDist) {
+                if (distSq < connectionDistSq) {
+                    // Only calculate square root for nodes that are close enough to draw lines
+                    const dist = Math.sqrt(distSq);
                     const alpha = (1 - (dist / connectionDist)) * 0.15;
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
