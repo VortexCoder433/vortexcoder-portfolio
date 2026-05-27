@@ -1671,3 +1671,8 @@ body::after {
     box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
 }
 
+/* Global utility class to hide elements */
+.hidden {
+    display: none !important;
+}
+
