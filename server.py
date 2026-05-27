@@ -197,7 +197,7 @@ def login():
 if __name__ == '__main__':
     print("*" * 50)
     print(" VortexCoder Authentication Server is running!")
-    print(" Endpoint: http://localhost:5000")
     print(" Running over Bottle Web Server...")
     print("*" * 50)
-    run(host='localhost', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    run(host='0.0.0.0', port=port)
