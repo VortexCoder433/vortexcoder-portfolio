@@ -693,7 +693,11 @@ function initAuthModal() {
     
     const signinForm = document.getElementById('signin-form');
     const signupForm = document.getElementById('signup-form');
+    const verifyForm = document.getElementById('verify-form');
     const log = document.getElementById('auth-terminal-log');
+
+    const API_URL = 'http://localhost:5000/api';
+    let verifyEmail = ''; // Temporarily hold email for verification step
 
     function printAuthLog(text, styleClass = '') {
         const p = document.createElement('p');
@@ -714,10 +718,13 @@ function initAuthModal() {
         document.body.style.overflow = '';
         signinForm.reset();
         signupForm.reset();
+        verifyForm.reset();
+        verifyEmail = '';
         log.innerHTML = '<p class="auth-log-line text-muted">> Idle. Awaiting authentication inputs...</p>';
     }
 
     function switchTab(tab) {
+        verifyForm.classList.add('hidden');
         if (tab === 'signin') {
             tabSignin.classList.add('active');
             tabSignup.classList.remove('active');
@@ -750,51 +757,136 @@ function initAuthModal() {
     tabSignin.addEventListener('click', () => switchTab('signin'));
     tabSignup.addEventListener('click', () => switchTab('signup'));
 
-    // Simulated login handler
+    // Login handler
     signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('signin-email').value;
+        const password = document.getElementById('signin-password').value;
         
         log.innerHTML = ''; // Clear logs
         printAuthLog('> Initializing authorization sequence...');
-        printAuthLog(`> Dialing secure authentication cluster for ${email}...`);
-        await new Promise(r => setTimeout(r, 600));
+        printAuthLog(`> Dialing authentication node at ${API_URL}/login...`);
         
-        printAuthLog('> Establishing TLS handshake. Cipher key accepted.');
-        printAuthLog('> Comparing passkey against directory hash...');
-        await new Promise(r => setTimeout(r, 800));
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                printAuthLog('[OK] Connection verified. Secure tunnel active.', 'text-success');
+                printAuthLog(`> Welcome back, Operator ${data.username}! Access granted.`, 'text-success');
+                showToast('success', `Access granted! Welcome back, ${data.username}.`);
+                await new Promise(r => setTimeout(r, 1000));
+                closeModal();
+            } else {
+                printAuthLog(`[ERR] Authentication failed: ${data.message}`, 'text-error');
+                showToast('error', `Login failed: ${data.message}`);
+            }
+        } catch (err) {
+            // Local server offline - Fallback to simulation
+            printAuthLog('[WARN] Local authentication node is offline.', 'text-muted');
+            printAuthLog('> Redirecting authorization to offline simulator cache...');
+            await new Promise(r => setTimeout(r, 600));
+            
+            printAuthLog('> Establishing mock TLS handshake. Key accepted.');
+            printAuthLog('> Comparing passkey against directory hash...');
+            await new Promise(r => setTimeout(r, 800));
 
-        printAuthLog('[OK] Access authorization: COMPLETED.', 'text-success');
-        printAuthLog('> Establishing secure session token...', 'text-success');
-        
-        showToast('success', `Welcome back, operator! Authorized as ${email}.`);
-        
-        await new Promise(r => setTimeout(r, 800));
-        closeModal();
+            printAuthLog('[OK] Access authorization: COMPLETED (SIMULATED).', 'text-success');
+            showToast('success', `Authorized as ${email} (Offline simulation mode)`);
+            await new Promise(r => setTimeout(r, 800));
+            closeModal();
+        }
     });
 
-    // Simulated registration handler
+    // Registration handler
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const username = document.getElementById('signup-username').value;
         const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
 
         log.innerHTML = ''; // Clear logs
         printAuthLog('> Registering new operator protocols...');
-        printAuthLog(`> Compiling parameters for callsign: ${username}...`);
-        await new Promise(r => setTimeout(r, 600));
+        printAuthLog(`> Calling registration terminal at ${API_URL}/register...`);
 
-        printAuthLog(`> Transmitting validation token to ${email}...`);
-        printAuthLog('> Creating unique operator profile database records...');
-        await new Promise(r => setTimeout(r, 800));
+        try {
+            const response = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            });
+            const data = await response.json();
 
-        printAuthLog('[OK] Registration validation: COMPLETED.', 'text-success');
-        printAuthLog(`> Operator ${username} initialized successfully!`, 'text-success');
+            if (response.ok && data.success) {
+                printAuthLog(`[OK] ${data.message}`, 'text-success');
+                printAuthLog(`> Awaiting 6-digit OTP code input...`);
+                showToast('info', 'Verification code dispatched to your Gmail!');
+                
+                verifyEmail = email; // Store for verification step
+                
+                // Switch to verification code form
+                signupForm.classList.add('hidden');
+                verifyForm.classList.remove('hidden');
+            } else {
+                printAuthLog(`[ERR] Registration failed: ${data.message}`, 'text-error');
+                showToast('error', `Registration failed: ${data.message}`);
+            }
+        } catch (err) {
+            // Local server offline - Fallback to simulation
+            printAuthLog('[WARN] Local registration node is offline.', 'text-muted');
+            printAuthLog('> Redirecting registration to offline simulator proxy...');
+            await new Promise(r => setTimeout(r, 600));
 
-        showToast('success', `Operator ${username} registered. Welcome to the system!`);
+            printAuthLog(`> Dispatched mock validation token to ${email}...`);
+            printAuthLog('> Creating unique operator profile database records...');
+            await new Promise(r => setTimeout(r, 800));
 
-        await new Promise(r => setTimeout(r, 800));
-        closeModal();
+            printAuthLog('[OK] Registration validation: COMPLETED (SIMULATED).', 'text-success');
+            showToast('success', `Operator ${username} registered (Offline simulation mode)`);
+            await new Promise(r => setTimeout(r, 800));
+            closeModal();
+        }
+    });
+
+    // Verification code handler
+    verifyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = document.getElementById('verify-code').value.trim();
+
+        if (!verifyEmail) {
+            printAuthLog('[ERR] Session expired. Please register again.', 'text-error');
+            return;
+        }
+
+        printAuthLog(`> Transmitting validation key: ${code} for verification...`);
+
+        try {
+            const response = await fetch(`${API_URL}/verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: verifyEmail, code })
+            });
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                printAuthLog('[OK] Operator uplink approved. Account registered.', 'text-success');
+                showToast('success', 'Email verified successfully! Account created.');
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Return to Sign In view
+                switchTab('signin');
+            } else {
+                printAuthLog(`[ERR] Verification failed: ${data.message}`, 'text-error');
+                showToast('error', `Verification failed: ${data.message}`);
+            }
+        } catch (err) {
+            printAuthLog(`[ERR] Network exception verifying uplink: ${err.message}`, 'text-error');
+            showToast('error', 'Network failure verifying code.');
+        }
     });
 }
 

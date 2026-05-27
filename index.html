@@ -510,6 +510,16 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-glow-cyan w-full">GENERATE CREDENTIALS</button>
             </form>
+
+            <!-- Verification Code Form -->
+            <form class="auth-form hidden" id="verify-form">
+                <div class="auth-form-title">VERIFY OPERATOR UPLINK</div>
+                <div class="form-group">
+                    <label for="verify-code">> ENTER_6_DIGIT_OTP_CODE:</label>
+                    <input type="text" id="verify-code" required placeholder="123456" maxlength="6" pattern="[0-9]{6}">
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow-cyan w-full">CONFIRM UPLINK</button>
+            </form>
             
             <div class="auth-terminal-log" id="auth-terminal-log">
                 <p class="auth-log-line text-muted">> Idle. Awaiting authentication inputs...</p>
