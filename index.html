@@ -37,7 +37,6 @@
                 <a href="#about" class="nav-link">Home</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#skills" class="nav-link">Skills</a>
-                <a href="#contact" class="nav-link">Terminal</a>
                 <div class="mobile-auth-buttons">
                     <button class="btn-auth btn-signin-mobile" id="mobile-signin-trigger">Sign In</button>
                     <button class="btn-auth btn-signup-mobile" id="mobile-signup-trigger">Sign Up</button>
@@ -387,80 +386,7 @@
             </div>
         </section>
 
-        <!-- Contact Section / Terminal -->
-        <section id="contact" class="section contact-section">
-            <div class="section-header">
-                <h2 class="section-title">✉️ Secure Contact Terminal</h2>
-                <p class="section-subtitle">Send a secure message directly to my Telegram inbox using the visual console below.</p>
-            </div>
 
-            <div class="terminal-container">
-                <div class="terminal-header">
-                    <div class="terminal-dots">
-                        <span class="dot dot-red"></span>
-                        <span class="dot dot-yellow"></span>
-                        <span class="dot dot-green"></span>
-                    </div>
-                    <div class="terminal-title">vortexcoder433@ssh-gateway:~</div>
-                    <div class="terminal-status">CONNECTED</div>
-                </div>
-                
-                <div class="terminal-body">
-                    <div class="terminal-log" id="terminal-log">
-                        <p class="log-line text-muted">Initialize secure handshake connection...</p>
-                        <p class="log-line text-success">Handshake approved. Port open on tunnel #4489.</p>
-                        <p class="log-line">Ready to compile message. Please complete inputs below.</p>
-                    </div>
-
-                    <form class="terminal-form" id="contact-form" novalidate>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="form-name">> SENDER_NAME:</label>
-                                <input type="text" id="form-name" required placeholder="John Doe">
-                            </div>
-                            <div class="form-group">
-                                <label for="form-email">> SENDER_EMAIL:</label>
-                                <input type="email" id="form-email" required placeholder="john@example.com">
-                            </div>
-                        </div>
-                        <div class="form-group msg-group">
-                            <label for="form-message">> MESSAGE_BODY:</label>
-                            <textarea id="form-message" required placeholder="Type your message here..." rows="4"></textarea>
-                        </div>
-
-                        <!-- Configuration values for Telegram. 
-                             Users can change these tokens directly in the code or use the gateway simulator. -->
-                        <div class="config-toggle-row">
-                            <button type="button" class="btn-toggle-config" id="toggle-config-btn">
-                                🔧 Configure Custom Telegram Bot API (Optional)
-                            </button>
-                        </div>
-                        <div class="tg-config-inputs hidden" id="tg-config-panel">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="form-bot-token">> TG_BOT_TOKEN:</label>
-                                    <input type="password" id="form-bot-token" placeholder="Optional bot token">
-                                </div>
-                                <div class="form-group">
-                                    <label for="form-chat-id">> TG_CHAT_ID:</label>
-                                    <input type="text" id="form-chat-id" placeholder="Optional chat ID">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="terminal-footer">
-                            <div class="command-input-line">
-                                <span class="prompt-arrow">$</span>
-                                <span class="input-simulation-text">execute --transmit --secure</span>
-                            </div>
-                            <button type="submit" class="btn-submit" id="btn-submit-form">
-                                ⚡ TRANSMIT MESSAGE
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- Footer -->
@@ -471,7 +397,6 @@
                 <a href="#about">Home</a>
                 <a href="#projects">Projects</a>
                 <a href="#skills">Skills</a>
-                <a href="#contact">Contact</a>
             </div>
         </div>
     </footer>

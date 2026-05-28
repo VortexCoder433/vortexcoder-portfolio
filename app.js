@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initCanvasParticles();
     initNovaBeatSequencer();
     initNovaAmbientSynth();
-    initTerminalContactForm();
     initAuthModal();
     initLogo3DInteraction();
 });
@@ -545,105 +544,7 @@ function initNovaAmbientSynth() {
     });
 }
 
-/* =========================================================================
-   5. Secure Contact Terminal SSH Console Form (Telegram Bot API integration)
-   ========================================================================= */
-function initTerminalContactForm() {
-    const form = document.getElementById('contact-form');
-    const log = document.getElementById('terminal-log');
-    const configBtn = document.getElementById('toggle-config-btn');
-    const configPanel = document.getElementById('tg-config-panel');
 
-    // Drawer toggles
-    configBtn.addEventListener('click', () => {
-        configPanel.classList.toggle('hidden');
-    });
-
-    function printLine(text, styleClass = '') {
-        const p = document.createElement('p');
-        p.className = `log-line ${styleClass}`;
-        p.textContent = text;
-        log.appendChild(p);
-        log.scrollTop = log.scrollHeight;
-    }
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const name = document.getElementById('form-name').value.trim();
-        const email = document.getElementById('form-email').value.trim();
-        const message = document.getElementById('form-message').value.trim();
-        
-        const customToken = document.getElementById('form-bot-token').value.trim();
-        const customChatId = document.getElementById('form-chat-id').value.trim();
-
-        if (!name || !email || !message) {
-            printLine('[ERR] compilation_error: blank fields detected.', 'text-error');
-            showToast('error', 'Message compilation failed. Complete inputs.');
-            return;
-        }
-
-        // Terminal animation logging sequence
-        printLine(`$ compile --msg --sender="${name}" --email="${email}"`);
-        printLine('> Encoding UTF-8 message segments...');
-        
-        const submitBtn = document.getElementById('btn-submit-form');
-        submitBtn.setAttribute('disabled', 'true');
-        submitBtn.textContent = 'TRANSMITTING...';
-
-        // Wait simulated delay for console feedback
-        await new Promise(r => setTimeout(r, 800));
-
-        // Format message
-        const textPayload = `⚡ New VortexCoder Portfolio message!\n👤 Sender: ${name}\n📧 Email: ${email}\n\n📝 Message:\n${message}`;
-
-        // Send logic
-        if (customToken && customChatId) {
-            printLine(`> Routing secure socket to Telegram API gateway...`);
-            const url = `https://api.telegram.org/bot${customToken}/sendMessage`;
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: customChatId,
-                        text: textPayload,
-                        parse_mode: 'HTML'
-                    })
-                });
-
-                const data = await response.json();
-                if (data.ok) {
-                    printLine('[OK] payload_transmitted: 200 SUCCESS.', 'text-success');
-                    printLine('> Session ended. Secure terminal locked.');
-                    showToast('success', 'Message sent successfully via Telegram bot API!');
-                    form.reset();
-                } else {
-                    printLine(`[ERR] api_failure: ${data.description}`, 'text-error');
-                    showToast('error', `Telegram API error: ${data.description}`);
-                }
-            } catch (err) {
-                printLine(`[ERR] network_exception: ${err.message}`, 'text-error');
-                showToast('error', 'Network failure transmitting payload.');
-            }
-        } else {
-            // Default simulator transmission (with beautiful SSH visual log)
-            printLine('> No custom Telegram credential key found.');
-            printLine('> Forwarding payload to VortexCoder simulator gateway...');
-            await new Promise(r => setTimeout(r, 600));
-            printLine('[OK] connection_redirected: proxy_channel_approved.', 'text-success');
-            printLine('[OK] payload_transmitted: 200 SUCCESS (SIMULATED).', 'text-success');
-            printLine('> Session closed. Connection terminated.', 'text-muted');
-            
-            showToast('success', 'Message successfully simulated (configure custom bot API keys to send actual TG messages!)');
-            form.reset();
-        }
-
-        submitBtn.removeAttribute('disabled');
-        submitBtn.textContent = '⚡ TRANSMIT MESSAGE';
-    });
-}
 
 /* =========================================================================
    6. UI Utility functions
