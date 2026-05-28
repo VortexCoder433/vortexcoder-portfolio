@@ -3,6 +3,68 @@
  * Canvas Particles, Web Audio Drum Sequencer & Procedural Ambient DSP, and SSH Contact Terminal.
  */
 
+const API_URL = 'https://vortexcoder-portfolio-backend.onrender.com';
+
+async function fetchWithTimeout(resource, options = {}, timeout = 4000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+        const response = await fetch(resource, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(id);
+        return response;
+    } catch (error) {
+        clearTimeout(id);
+        throw error;
+    }
+}
+
+function detectClientSpecs() {
+    const userAgent = navigator.userAgent;
+    let device = 'Desktop';
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(userAgent)) {
+        device = 'Mobile';
+    } else if (/Tablet|iPad/i.test(userAgent)) {
+        device = 'Tablet';
+    }
+
+    let os = 'Unknown OS';
+    if (userAgent.indexOf('Win') !== -1) os = 'Windows';
+    else if (userAgent.indexOf('Mac') !== -1) os = 'MacOS';
+    else if (userAgent.indexOf('X11') !== -1) os = 'UNIX';
+    else if (userAgent.indexOf('Linux') !== -1) os = 'Linux';
+    else if (/Android/i.test(userAgent)) os = 'Android';
+    else if (/iPhone|iPad|iPod/i.test(userAgent)) os = 'iOS';
+
+    let browser = 'Unknown Browser';
+    if (userAgent.indexOf('Chrome') !== -1 && userAgent.indexOf('Safari') !== -1 && userAgent.indexOf('Edge') === -1 && userAgent.indexOf('OPR') === -1) browser = 'Chrome';
+    else if (userAgent.indexOf('Safari') !== -1 && userAgent.indexOf('Chrome') === -1) browser = 'Safari';
+    else if (userAgent.indexOf('Firefox') !== -1) browser = 'Firefox';
+    else if (userAgent.indexOf('MSIE') !== -1 || !!document.documentMode === true) browser = 'IE';
+    else if (userAgent.indexOf('Edge') !== -1) browser = 'Edge';
+    else if (userAgent.indexOf('OPR') !== -1 || userAgent.indexOf('Opera') !== -1) browser = 'Opera';
+
+    const resolution = `${window.screen.width}x${window.screen.height}`;
+    const referrer = document.referrer || 'Direct';
+
+    return { device, os, browser, resolution, referrer };
+}
+
+async function sendTelemetry() {
+    try {
+        const payload = detectClientSpecs();
+        await fetch(`${API_URL}/api/telemetry`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+    } catch (e) {
+        console.log('Telemetry collection offline.');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initMobileNav();
     initCanvasParticles();
@@ -10,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNovaAmbientSynth();
     initAuthModal();
     initLogo3DInteraction();
+    sendTelemetry();
 });
 
 /* =========================================================================
@@ -763,44 +826,87 @@ function initAuthModal() {
         printAuthLog('> Checking encrypted passkey signature hash...');
         await new Promise(r => setTimeout(r, 500));
         
-        const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
-        
-        // Add a default guest user so they can log in even if they didn't register!
-        if (Object.keys(users).length === 0) {
-            users['guest'] = {
-                password: 'password',
-                registeredAt: '24.05.2026 12:00:00',
-                serialNumber: 1,
-                downloads: 3
-            };
-            localStorage.setItem('vortexcoder_users', JSON.stringify(users));
-        }
+        let apiLoggedIn = false;
+        let userData = null;
 
-        const userData = users[username];
-        const isValid = userData && (typeof userData === 'string' ? userData === password : userData.password === password);
-
-        if (isValid) {
-            // Upgrade legacy string to object if necessary
-            if (typeof userData === 'string') {
-                users[username] = {
-                    password: password,
+        try {
+            printAuthLog('> Contacting sector server...');
+            const res = await fetchWithTimeout(`${API_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            }, 3000);
+            const data = await res.json();
+            if (res.ok && data.success) {
+                apiLoggedIn = true;
+                userData = data;
+            } else {
+                throw new Error(data.message || 'Invalid signature or passkey');
+            }
+        } catch (err) {
+            if (err.message === 'Invalid signature or passkey' || err.message === 'Missing Callsign or Passkey') {
+                printAuthLog('[ERR] Handshake failed: Invalid Operator Callsign or Passkey.', 'text-error');
+                showToast('error', 'Login failed: Invalid credentials.');
+                return;
+            }
+            
+            // Network error / server offline -> fallback to local storage
+            printAuthLog('> Sector server unreachable. Switching to offline simulation mode...', 'text-warning');
+            const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
+            
+            // Add a default guest user if database is empty
+            if (Object.keys(users).length === 0) {
+                users['guest'] = {
+                    password: 'password',
                     registeredAt: '24.05.2026 12:00:00',
-                    serialNumber: Object.keys(users).indexOf(username) + 1,
-                    downloads: 0
+                    serialNumber: 1,
+                    downloads: 3
                 };
                 localStorage.setItem('vortexcoder_users', JSON.stringify(users));
             }
+            
+            const localUser = users[username];
+            const isValid = localUser && (typeof localUser === 'string' ? localUser === password : localUser.password === password);
+            if (isValid) {
+                apiLoggedIn = true;
+                userData = typeof localUser === 'string' ? {
+                    username: username,
+                    serialNumber: Object.keys(users).indexOf(username) + 1,
+                    registeredAt: '24.05.2026 12:00:00',
+                    downloads: 0
+                } : {
+                    username: username,
+                    serialNumber: localUser.serialNumber || 1,
+                    registeredAt: localUser.registeredAt || '24.05.2026 12:00:00',
+                    downloads: localUser.downloads || 0
+                };
+                printAuthLog('[OK] Handshake verified (Offline simulation mode).', 'text-warning');
+            } else {
+                printAuthLog('[ERR] Handshake failed: Invalid Operator Callsign or Passkey.', 'text-error');
+                showToast('error', 'Login failed: Invalid credentials.');
+                return;
+            }
+        }
 
+        if (apiLoggedIn && userData) {
             sessionStorage.setItem('vortexcoder_active_user', username);
+            
+            // Sync with local storage user stats for local profile view
+            const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
+            users[username] = {
+                password: password,
+                registeredAt: userData.registeredAt || '24.05.2026 12:00:00',
+                serialNumber: userData.serialNumber || 1,
+                downloads: userData.downloads || 0
+            };
+            localStorage.setItem('vortexcoder_users', JSON.stringify(users));
+
             printAuthLog('[OK] Handshake verified. Access granted.', 'text-success');
             printAuthLog(`> Welcome back, Operator ${username}! Secure uplink established.`, 'text-success');
             showToast('success', `Access granted! Welcome back, ${username}.`);
             await new Promise(r => setTimeout(r, 1000));
             closeModal();
             updateAuthUI();
-        } else {
-            printAuthLog('[ERR] Handshake failed: Invalid Operator Callsign or Passkey.', 'text-error');
-            showToast('error', 'Login failed: Invalid credentials.');
         }
     });
 
@@ -818,39 +924,72 @@ function initAuthModal() {
         log.innerHTML = ''; // Clear logs
         printAuthLog('> Registering new operator protocols...');
         await new Promise(r => setTimeout(r, 400));
-        printAuthLog('> Contacting local secure sector directory database..._');
+        printAuthLog('> Contacting sector directory database..._');
         await new Promise(r => setTimeout(r, 600));
         printAuthLog(`> Verifying uniqueness of callsign: ${username}...`);
         await new Promise(r => setTimeout(r, 500));
 
-        const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
+        let registered = false;
+        let offlineMode = false;
 
-        // Initialize default guest if empty so that guest remains Serial #0001
-        if (Object.keys(users).length === 0) {
-            users['guest'] = {
-                password: 'password',
-                registeredAt: '24.05.2026 12:00:00',
-                serialNumber: 1,
-                downloads: 3
-            };
+        try {
+            const res = await fetchWithTimeout(`${API_URL}/api/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            }, 3000);
+            const data = await res.json();
+            if (res.ok && data.success) {
+                registered = true;
+            } else {
+                throw new Error(data.message || 'Callsign already claimed');
+            }
+        } catch (err) {
+            if (err.message === 'Callsign already claimed' || err.message === 'Missing Callsign or Passkey') {
+                printAuthLog(`[ERR] Registration failed: ${err.message}`, 'text-error');
+                showToast('error', `Registration failed: ${err.message}`);
+                return;
+            }
+            
+            // Server offline / network error -> fallback to local storage
+            offlineMode = true;
+            const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
+            
+            // Initialize default guest if empty
+            if (Object.keys(users).length === 0) {
+                users['guest'] = {
+                    password: 'password',
+                    registeredAt: '24.05.2026 12:00:00',
+                    serialNumber: 1,
+                    downloads: 3
+                };
+            }
+            
+            if (users[username]) {
+                printAuthLog(`[ERR] Registration failed: Callsign "${username}" is already claimed by another operator.`, 'text-error');
+                showToast('error', 'Registration failed: Callsign already exists.');
+                return;
+            } else {
+                users[username] = {
+                    password: password,
+                    registeredAt: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                    serialNumber: Object.keys(users).length + 1,
+                    downloads: 0
+                };
+                localStorage.setItem('vortexcoder_users', JSON.stringify(users));
+                registered = true;
+            }
         }
 
-        if (users[username]) {
-            printAuthLog(`[ERR] Registration failed: Callsign "${username}" is already claimed by another operator.`, 'text-error');
-            showToast('error', 'Registration failed: Callsign already exists.');
-        } else {
-            // Save to local storage
-            users[username] = {
-                password: password,
-                registeredAt: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-                serialNumber: Object.keys(users).length + 1,
-                downloads: 0
-            };
-            localStorage.setItem('vortexcoder_users', JSON.stringify(users));
-
-            printAuthLog('[OK] Unique signature generated.', 'text-success');
-            printAuthLog(`> Registered Operator "${username}" successfully.`, 'text-success');
-            showToast('success', `Operator ${username} registered successfully!`);
+        if (registered) {
+            if (offlineMode) {
+                printAuthLog('[OK] Registered (Offline simulation mode)', 'text-warning');
+                showToast('success', 'Registered (Offline simulation mode)');
+            } else {
+                printAuthLog('[OK] Unique signature generated.', 'text-success');
+                printAuthLog(`> Registered Operator "${username}" successfully.`, 'text-success');
+                showToast('success', `Operator ${username} registered successfully!`);
+            }
             await new Promise(r => setTimeout(r, 1200));
             
             // Switch to signin tab automatically
@@ -874,7 +1013,7 @@ function initAuthModal() {
 
     // Downloads tracking
     document.querySelectorAll('.download-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
             const activeUser = sessionStorage.getItem('vortexcoder_active_user');
             if (activeUser) {
                 const users = JSON.parse(localStorage.getItem('vortexcoder_users') || '{}');
@@ -893,6 +1032,27 @@ function initAuthModal() {
                     
                     const dlEl = document.getElementById('profile-stat-downloads');
                     if (dlEl) dlEl.textContent = users[activeUser].downloads;
+                }
+
+                // Call download API for telemetry
+                try {
+                    const res = await fetchWithTimeout(`${API_URL}/api/download`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: activeUser })
+                    }, 2000);
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        // Sync downloads count with server response if needed
+                        if (userData && typeof users[activeUser] === 'object') {
+                            users[activeUser].downloads = data.downloads;
+                            localStorage.setItem('vortexcoder_users', JSON.stringify(users));
+                            const dlEl = document.getElementById('profile-stat-downloads');
+                            if (dlEl) dlEl.textContent = data.downloads;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Download telemetry offline:', e);
                 }
             }
         });
