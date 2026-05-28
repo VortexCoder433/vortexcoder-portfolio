@@ -3,7 +3,7 @@
  * Canvas Particles, Web Audio Drum Sequencer & Procedural Ambient DSP, and SSH Contact Terminal.
  */
 
-const API_URL = 'https://vortexcoder-portfolio-backend.onrender.com';
+const API_URL = 'https://vortexcoder-portfolio.onrender.com';
 
 async function fetchWithTimeout(resource, options = {}, timeout = 4000) {
     const controller = new AbortController();
